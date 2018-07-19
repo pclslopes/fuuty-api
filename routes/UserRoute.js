@@ -11,7 +11,7 @@
 // api/v1/users/{id}/leagues/{id}/Invite
 
 import express from 'express';
-//import _ from 'lodash';
+import _ from 'lodash';
 import CountryModel from '../models/Country';
 import mongoose from 'mongoose';
 
@@ -70,12 +70,5 @@ router.delete('/:id', (req, res) => {
         res.status(200).send(`Country with id: ${req.params.id} was deleted.`);
     });
 });
-/*
-router.param('id', (req, res, next, id) => {
-    if(isNaN(id)) {
-        next(`${id} is not a valid number.`);
-    }
-    next();
-});
-*/
+
 module.exports = router;
