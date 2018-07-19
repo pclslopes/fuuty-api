@@ -1,0 +1,27 @@
+{
+  "name": "fuuty-api",
+  "version": "1.0.0",
+  "description": "fuuty api",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon ./app.js --exec babel-node -e js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Pedro Lopes",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-0": "^6.24.1",
+    "nodemon": "^1.18.1"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "ejs": "^2.6.1",
+    "express": "^4.16.3",
+    "express-validator": "^5.2.0",
+    "lodash": "^4.17.10",
+    "mongoose": "^5.2.3",
+    "morgan": "^1.9.0"
+  }
+}
