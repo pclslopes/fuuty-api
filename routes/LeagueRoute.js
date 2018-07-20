@@ -92,17 +92,19 @@ router.post('/',[
         sanitize('LeagueStartDate').trim().escape(),
         sanitize('LeagueIsClosed').trim().escape()
     ], (req, res) => {
-        const id = new mongoose.Types.ObjectId();
-        const leagueToPersist = Object.assign({
-        _id : id
-    }, req.body);
 
     // Parameter Validation
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({ errors: errors.mapped() });
     }
-    
+
+    // Set Model Object
+    const id = new mongoose.Types.ObjectId();
+        const leagueToPersist = Object.assign({
+        _id : id
+    }, req.body);
+
     // Validate Country
     CountryModel.findById(leagueToPersist.Country, (err, country) => {
         if(err) res.status(500).send(err);
@@ -119,8 +121,23 @@ router.post('/',[
     });
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id',[
+        check('Country').isLength({ min: 1 }).withMessage('Country is required'),
+        check('LeagueName').isLength({ min: 1 }).withMessage('LeagueName is required'),
+        sanitize('Country').trim().escape(),
+        sanitize('LeagueName').trim().escape(),
+        sanitize('LeagueYearStart').trim().escape(),
+        sanitize('LeagueYearEnd').trim().escape(),
+        sanitize('LeagueStartDate').trim().escape(),
+        sanitize('LeagueIsClosed').trim().escape()
+    ], (req, res) => {
     
+    // Parameter Validation
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.mapped() });
+    }
+
     // Validate Country
     CountryModel.findById(req.body.Country, (err, country) => {
         if(err) return res.status(500).send(err);

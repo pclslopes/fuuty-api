@@ -1,73 +1,126 @@
-// api/v1/users
-// api/v1/users/{id}
-// api/v1/users/{id}/leagues
-// api/v1/users/{id}/leagues/{id}
-// api/v1/users/{id}/leagues/{id}/leaguematch
-// api/v1/users/{id}/leagues/{id}/leaguematch/{id}
-// api/v1/users/{id}/leagues/{id}/leaguematch/{id}/bets
-// api/v1/users/{id}/leagues/{id}/leaguematch/{id}/bets/{id}
-// api/v1/users/{id}/leagues/{id}/players
-// api/v1/users/{id}/leagues/{id}/players/{id}
-// api/v1/users/{id}/leagues/{id}/Invite
+
+// api/v1/user
+// api/v1/user/{id}
+
+
+// api/v1/user/{id}/leagues/{id}/{id}/bets
+// api/v1/user/{id}/leagues/{id}/{id}/bets/{id}
+
+// api/v1/user/{id}/leagues/{id}/Invite
 
 import express from 'express';
+import mongoose from 'mongoose';
 import _ from 'lodash';
 import CountryModel from '../models/Country';
-import mongoose from 'mongoose';
+import UserModel from '../models/User';
+import UserLeagueModel from '../models/UserLeague';
+import LeagueModel from '../models/League';
+import { check, validationResult, checkSchema } from 'express-validator/check';
+import { matchedData, sanitize } from 'express-validator/filter';
 
 const router = express.Router();
 
+// api/v1/user [GET]
 router.get('/', (req, res) => {
-    CountryModel.find((err, countries) => {
+    UserModel.find((err, users) => {
         if(err) res.status(500).send(err);
-        res.json(countries);
+        res.json(users);
     });
 });
 
+// api/v1/user/{id} [GET]
 router.get('/:id', (req, res) => {
-    CountryModel.findById(req.params.id, (err, country) => {
+    UserModel.findById(req.params.id, (err, user) => {
         if(err) res.status(500).send(err);
-        if(country){
-            res.json(country);
+        if(user){
+            res.json(user);
         }else{
-            res.status(404).send(`Country with id: ${req.params.id} not found.`)
+            res.status(404).send(`User with id: ${req.params.id} not found.`)
         }
     });
 });
 
-router.post('/', (req, res) => {
+// api/v1/user [POST]
+router.post('/',[
+        check('UserName').isLength({ min: 1 }).withMessage('UserName is required'),
+        check('UserEmail').isLength({ min: 1 }).withMessage('UserEmail is required'),
+        check('UserFBID').isLength({ min: 1 }).withMessage('UserFBID is required'),
+        sanitize('UserName').trim().escape(),
+        sanitize('UserEmail').trim().escape(),
+        sanitize('UserFBID').trim().escape()
+    ], (req, res) => {
+
+    // Parameter Validation
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.mapped() });
+    }
+
+    // Set Model Object
     const id = new mongoose.Types.ObjectId();
-    const countryToPersist = Object.assign({
+    const userToPersist = Object.assign({
         _id : id
     }, req.body);
-    const country = new CountryModel(countryToPersist);
-    country.save().then((err, country) => {
+
+    const user = new LeagueModel(userToPersist);
+    user.save().then((err, user) => {
         if(err) res.status(500).send(err);
-        res.json(country);
+        res.json(user);
     });
-    console.log(JSON.stringify(countryToPersist));
+    console.log(JSON.stringify(userToPersist));
 });
 
-router.put('/:id', (req, res) => {
-    CountryModel.findById(req.params.id, (err, country) => {
+// api/v1/user [PUT]
+router.put('/:id',[
+        check('UserName').isLength({ min: 1 }).withMessage('UserName is required'),
+        check('UserEmail').isLength({ min: 1 }).withMessage('UserEmail is required'),
+        check('UserFBID').isLength({ min: 1 }).withMessage('UserFBID is required'),
+        sanitize('UserName').trim().escape(),
+        sanitize('UserEmail').trim().escape(),
+        sanitize('UserFBID').trim().escape()
+    ], (req, res) => {
+
+    // Parameter Validation
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.mapped() });
+    }
+
+    // TODO: Only admin can update the following fields:
+    // - UserName
+    // - UserEmail
+    // - UserFBID
+
+    // Validate User
+    UserModel.findById(req.params.id, (err, user) => {
         if(err) res.status(500).send(err);
-        if(country){
-            country.CountryName = req.body.CountryName;
-            country.CountrySymbol = req.body.CountrySymbol;
-            country.save().then((err, country) => {
+        if(user){
+
+            user.UserName = req.body.UserName;
+            user.UserEmail = req.body.UserEmail;
+            user.UserFBID = req.body.UserFBID;
+
+            user.save().then((err, team) => {
                 if(err) res.status(500).send(err);
-                res.json(country);
-            });
+                res.json(user);
+                });
         }else{
-            res.status(404).send(`Country with id: ${req.params.id} not found.`)
+            res.status(404).send(`User with id: ${req.params.id} not found.`)
         }
-    });
+    }); 
 });
 
-router.delete('/:id', (req, res) => {
-    CountryModel.findByIdAndRemove(req.params.id, (err, country)=> {
+// api/v1/user/{id} [DELETE]
+router.delete('/:id',[
+        sanitize('id').trim().escape()
+    ], (req, res) => {
+    
+    // TODO: Validate if any ref to user exists:
+    // - UserLeagues
+
+    UserModel.findByIdAndRemove(req.params.id, (err, user)=> {
         if(err) res.status(500).send(err);
-        res.status(200).send(`Country with id: ${req.params.id} was deleted.`);
+        res.status(200).send(`User with id: ${req.params.id} was deleted.`);
     });
 });
 
