@@ -15,9 +15,9 @@ const LeagueSchema = new Schema({
     LeagueStartDate: { type: Date },
     LeagueIsClosed: Boolean,
     LeagueMatches: [{type: Schema.Types.ObjectId, ref: 'LeagueMatch' }],
-    LeagueTeams: [{type: Schema.Types.ObjectId, ref: 'Team' }],
+    LeagueTeams: [{type: Schema.Types.ObjectId, ref: 'LeagueTeam' }],
     DateCreated: { type: Date, default: Date.now },
     DateUpdated: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('League', LeagueSchema);
+module.exports = mongoose.model('League', LeagueSchema, 'league');

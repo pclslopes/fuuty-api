@@ -16,4 +16,4 @@ const UserLeaguePlayerBetSchema = new Schema({
     DateUpdated: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('UserLeaguePlayerBet', UserLeaguePlayerBetSchema);
+module.exports = mongoose.model('UserLeaguePlayerBet', UserLeaguePlayerBetSchema, 'userleagueplayerbet');

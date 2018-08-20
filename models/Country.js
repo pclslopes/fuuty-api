@@ -14,4 +14,4 @@ const CountrySchema = new Schema({
     DateUpdated: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Country', CountrySchema);
+module.exports = mongoose.model('Country', CountrySchema, 'country');

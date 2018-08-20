@@ -14,14 +14,18 @@ import { matchedData, sanitize } from 'express-validator/filter';
 const router = express.Router();
 
 router.get('/', (req, res) => {
-    LeagueModel.find((err, leagues) => {
-        if(err) res.status(500).send(err);
-        res.json(leagues);
+    LeagueModel.find()
+        .populate('Country')
+        .populate('LeagueMatches', ['_id'])
+        .populate('LeagueTeams', ['_id'])
+        .exec((err, leagues) => {
+            if(err) res.status(500).send(err);
+            res.json(leagues);
     });
 });
 
 router.get('/:id', (req, res) => {
-    LeagueModel.findById(req.params.id).populate('').exec((err, league) => {
+    LeagueModel.findById(req.params.id).populate('Team').exec((err, league) => {
         if(err) res.status(500).send(err);
         if(league){
             res.json(league);

@@ -12,7 +12,7 @@ import { matchedData, sanitize } from 'express-validator/filter';
 const router = express.Router();
 
 router.get('/', (req, res) => {
-    CountryModel.find((err, countries) => {
+    CountryModel.find({}, (err, countries) => {
         if(err) res.status(500).send(err);
         res.json(countries);
     });

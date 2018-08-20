@@ -14,4 +14,4 @@ const LeagueTeamSchema = new Schema({
     DateUpdated: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('LeagueTeam', LeagueTeamSchema);
+module.exports = mongoose.model('LeagueTeam', LeagueTeamSchema, 'LeagueTeam');

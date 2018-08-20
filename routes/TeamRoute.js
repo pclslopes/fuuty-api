@@ -12,7 +12,8 @@ import { matchedData, sanitize } from 'express-validator/filter';
 const router = express.Router();
 
 router.get('/', (req, res) => {
-    TeamModel.find().exec((err, teams) => {
+    TeamModel.find().populate('Country').exec((err, teams) => {
+        console.log("this is the rught function");
         if(err) res.status(500).send(err);
         res.json(teams);
     });

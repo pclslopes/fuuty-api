@@ -16,4 +16,4 @@ const UserLeaguePlayerSchema = new Schema({
     DateUpdated: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('UserLeaguePlayer', UserLeaguePlayerSchema);
+module.exports = mongoose.model('UserLeaguePlayer', UserLeaguePlayerSchema, 'userleagueplayer');

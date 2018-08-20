@@ -23,4 +23,4 @@ const LeagueMatchSchema = new Schema({
     DateUpdated: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('LeagueMatch', LeagueMatchSchema);
+module.exports = mongoose.model('LeagueMatch', LeagueMatchSchema, 'LeagueMatch');
