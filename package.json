@@ -4,7 +4,8 @@
   "description": "fuuty api",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js", //"nodemon ./app.js --exec babel-node -e js",
+    "start": "node app.js", 
+    "start_old": "nodemon ./app.js --exec babel-node -e js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Pedro Lopes",
