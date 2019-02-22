@@ -25,19 +25,19 @@ var TeamModel = require('../models/Team');
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/', function(req, res) {
     LeagueModel.find()
         .populate('Country')
         .populate('LeagueMatches', ['_id'])
         .populate('LeagueTeams', ['_id'])
-        .exec((err, leagues) => {
+        .exec(function(err, leagues) {
             if(err) res.status(500).send(err);
             res.json(leagues);
     });
 });
 
-router.get('/:id', (req, res) => {
-    LeagueModel.findById(req.params.id).populate('Team').exec((err, league) => {
+router.get('/:id', function(req, res) {
+    LeagueModel.findById(req.params.id).populate('Team').exec(function(err, league) {
         if(err) res.status(500).send(err);
         if(league){
             res.json(league);
@@ -47,11 +47,11 @@ router.get('/:id', (req, res) => {
     });
 });
 
-router.get('/:id/teams', (req, res) => {
-    LeagueModel.findById(req.params.id, (err, league) => {
+router.get('/:id/teams', function(req, res) {
+    LeagueModel.findById(req.params.id, function(err, league) {
         if(err) res.status(500).send(err);
         if(league){
-            LeagueTeamModel.find({ League: req.params.id }, (err, teams) => {
+            LeagueTeamModel.find({ League: req.params.id }, function(err, teams) {
                 if(err) res.status(500).send(err);
                 res.json(teams);
             });
@@ -65,7 +65,7 @@ router.post('/:id/teams', [
         check('Team').isLength({ min: 1 }).withMessage('Team is required'),
         sanitize('id').trim().escape(),
         sanitize('Team').trim().escape()
-    ], (req, res) => {
+    ], function(req, res) {
 
     // Parameter Validation
     const errors = validationResult(req);
@@ -74,12 +74,12 @@ router.post('/:id/teams', [
     }
 
     // Validate League
-    LeagueModel.findById(req.params.id, (err, league) => {
+    LeagueModel.findById(req.params.id, function(err, league) {
         if(err) return res.status(500).send(err);
         if(!league) return res.status(404).send(`League with id: ${req.params.id} not found.`)
     });
     // Validate Team
-    TeamModel.findById(req.body.Team, (err, team) => {
+    TeamModel.findById(req.body.Team, function(err, team) {
         if(err) return res.status(500).send(err);
         if(!team) return res.status(404).send(`Team with id: ${req.body.Team} not found.`)
     });
@@ -91,7 +91,7 @@ router.post('/:id/teams', [
     }, req.body);
 
     const leagueTeam = new LeagueTeamModel(leagueTeamToPersist);
-    leagueTeam.save().then((err, leagueTeam) => {
+    leagueTeam.save().then(function(err, leagueTeam) {
         if(err) res.status(500).send(err);
         res.json(leagueTeam);
     });
@@ -107,7 +107,7 @@ router.post('/',[
         sanitize('LeagueYearEnd').trim().escape(),
         sanitize('LeagueStartDate').trim().escape(),
         sanitize('LeagueIsClosed').trim().escape()
-    ], (req, res) => {
+    ], function(req, res) {
 
     // Parameter Validation
     const errors = validationResult(req);
@@ -122,11 +122,11 @@ router.post('/',[
     }, req.body);
 
     // Validate Country
-    CountryModel.findById(leagueToPersist.Country, (err, country) => {
+    CountryModel.findById(leagueToPersist.Country, function(err, country) {
         if(err) res.status(500).send(err);
         if(country){
             const league = new LeagueModel(leagueToPersist);
-            league.save().then((err, league) => {
+            league.save().then(function(err, league) {
                 if(err) res.status(500).send(err);
                 res.json(league);
             });
@@ -146,7 +146,7 @@ router.put('/:id',[
         sanitize('LeagueYearEnd').trim().escape(),
         sanitize('LeagueStartDate').trim().escape(),
         sanitize('LeagueIsClosed').trim().escape()
-    ], (req, res) => {
+    ], function(req, res) {
     
     // Parameter Validation
     const errors = validationResult(req);
@@ -155,13 +155,13 @@ router.put('/:id',[
     }
 
     // Validate Country
-    CountryModel.findById(req.body.Country, (err, country) => {
+    CountryModel.findById(req.body.Country, function(err, country) {
         if(err) return res.status(500).send(err);
         if(!country) return res.status(404).send(`Country with id: ${req.body.Country} not found.`)
     });
 
     // Validate League
-    LeagueModel.findById(req.params.id, (err, league) => {
+    LeagueModel.findById(req.params.id, function(err, league) {
         if(err) res.status(500).send(err);
         if(league){
             league.Country = req.body.Country;
@@ -171,7 +171,7 @@ router.put('/:id',[
             // LeagueIsClosed: not updated here
             // LeagueMatches: not updated here
             // LeagueTeams: not updated here
-            league.save().then((err, team) => {
+            league.save().then(function(err, team) {
                 if(err) res.status(500).send(err);
                 res.json(league);
                 });
@@ -181,23 +181,23 @@ router.put('/:id',[
     });
 });
 
-router.delete('/:id', (req, res) => {
-    LeagueModel.findByIdAndRemove(req.params.id, (err, league)=> {
+router.delete('/:id', function(req, res) {
+    LeagueModel.findByIdAndRemove(req.params.id, function(err, league) {
         if(err) res.status(500).send(err);
         res.status(200).send(`League with id: ${req.params.id} was deleted.`);
     });
 });
 
-router.delete('/:id/teams/:teamId', (req, res) => {
+router.delete('/:id/teams/:teamId', function(req, res) {
 
     // Validate League
-    LeagueModel.findById(req.params.id, (err, league) => {
+    LeagueModel.findById(req.params.id, function(err, league) {
         if(err) return res.status(500).send(err);
         if(!league) return res.status(404).send(`League with id: ${req.params.id} not found.`)
     });
     
     // Find and Remove
-    LeagueTeamModel.findByIdAndRemove(req.params.teamId, (err, leagueTeam)=> {
+    LeagueTeamModel.findByIdAndRemove(req.params.teamId, function(err, leagueTeam) {
         if(err) res.status(500).send(err);
         res.status(200).send(`League Team with id: ${req.params.teamId} was deleted.`);
     });

@@ -33,8 +33,8 @@ var LeagueModel = require('../models/League');
 const router = express.Router();
 
 // api/v1/user [GET]
-router.get('/', (req, res) => {
-    UserModel.find().populate('UserLeague').exec((err, users) => {
+router.get('/', function(req, res) {
+    UserModel.find().populate('UserLeague').exec(function(err, users) {
         if(err) res.status(500).send(err);
         res.json(users);
         console.log("Populated User " + users);
@@ -42,8 +42,8 @@ router.get('/', (req, res) => {
 });
 
 // api/v1/user/{id} [GET]
-router.get('/:id', (req, res) => {
-    UserModel.findById(req.params.id, (err, user) => {
+router.get('/:id', function(req, res) {
+    UserModel.findById(req.params.id, function(err, user) {
         if(err) res.status(500).send(err);
         if(user){
             res.json(user);
@@ -62,7 +62,7 @@ router.post('/',[
         sanitize('UserName').trim().escape(),
         sanitize('UserEmail').trim().escape(),
         sanitize('UserFBID').trim().escape()
-    ], (req, res) => {
+    ], function(req, res) {
 
     // Parameter Validation
     const errors = validationResult(req);
@@ -77,7 +77,7 @@ router.post('/',[
     }, req.body);
 
     const user = new UserModel(userToPersist);
-    user.save().then((err, user) => {
+    user.save().then(function(err, user) {
         if(err) res.status(500).send(err);
         res.json(user);
     });
@@ -92,7 +92,7 @@ router.put('/:id',[
         sanitize('UserName').trim().escape(),
         sanitize('UserEmail').trim().escape(),
         sanitize('UserFBID').trim().escape()
-    ], (req, res) => {
+    ], function(req, res) {
 
     // Parameter Validation
     const errors = validationResult(req);
@@ -106,7 +106,7 @@ router.put('/:id',[
     // - UserFBID
 
     // Validate User
-    UserModel.findById(req.params.id, (err, user) => {
+    UserModel.findById(req.params.id, function(err, user) {
         if(err) res.status(500).send(err);
         if(user){
 
@@ -114,7 +114,7 @@ router.put('/:id',[
             user.UserEmail = req.body.UserEmail;
             user.UserFBID = req.body.UserFBID;
 
-            user.save().then((err, team) => {
+            user.save().then(function(err, team) {
                 if(err) res.status(500).send(err);
                 res.json(user);
                 });
@@ -127,12 +127,12 @@ router.put('/:id',[
 // api/v1/user/{id} [DELETE]
 router.delete('/:id',[
         sanitize('id').trim().escape()
-    ], (req, res) => {
+    ], function(req, res) {
     
     // TODO: Validate if any ref to user exists:
     // - UserLeagues
 
-    UserModel.findByIdAndRemove(req.params.id, (err, user)=> {
+    UserModel.findByIdAndRemove(req.params.id, function(err, user) {
         if(err) res.status(500).send(err);
         res.status(200).send(`User with id: ${req.params.id} was deleted.`);
     });
@@ -143,15 +143,15 @@ router.delete('/:id',[
 // api/v1/user/{id}/leagues [GET]
 router.get('/:id/leagues',[
         sanitize('id').trim().escape()
-    ], (req, res) => {
+    ], function(req, res) {
 
     // Validate User
-    UserModel.findById(req.params.id, (err, user) => {
+    UserModel.findById(req.params.id, function(err, user)  {
         if(err) return res.status(500).send(err);
         if(!user) return res.status(404).send(`User with id: ${req.params.id} not found.`)
     });
 
-    UserLeagueModel.find({ User: req.params.id }, (err, userLeagues) => {
+    UserLeagueModel.find({ User: req.params.id }, function(err, userLeagues) {
         if(err) res.status(500).send(err);
         res.json(userLeagues);
     });
@@ -161,15 +161,15 @@ router.get('/:id/leagues',[
 router.get('/:id/leagues/:userLeagueId',[
         sanitize('id').trim().escape(),
         sanitize('userLeagueId').trim().escape()
-    ], (req, res) => {
+    ], function(req, res) {
 
     // Validate User
-    UserModel.findById(req.params.id, (err, user) => {
+    UserModel.findById(req.params.id, function(err, user)  {
         if(err) return res.status(500).send(err);
         if(!user) return res.status(404).send(`User with id: ${req.params.id} not found.`)
     });
 
-    UserLeagueModel.findById(req.params.userLeagueId, (err, userLeague) => {
+    UserLeagueModel.findById(req.params.userLeagueId, function(err, userLeague) {
         if(err) return res.status(500).send(err);
         if(!userLeague) return res.status(404).send(`UserLeague with id: ${req.params.userLeagueId} not found.`)
     });
@@ -183,7 +183,7 @@ router.post('/:id/leagues', [
         sanitize('UserLeagueName').trim().escape(),
         sanitize('UserLeagueRules').trim().escape(),
         sanitize('UserLeagueIsGlobal').trim().escape()
-    ], (req, res) => {
+    ], function(req, res) {
 
     // Parameter Validation
     const errors = validationResult(req);
@@ -192,13 +192,13 @@ router.post('/:id/leagues', [
     }
 
     // Validate User
-    UserModel.findById(req.params.id, (err, user) => {
+    UserModel.findById(req.params.id, function(err, user)  {
         if(err) return res.status(500).send(err);
         if(!user) return res.status(404).send(`User with id: ${req.params.id} not found.`)
     });
 
     // Validate League
-    LeagueModel.findById(req.body.League, (err, league) => {
+    LeagueModel.findById(req.body.League, function(err, league) {
         if(err) return res.status(500).send(err);
         if(!league) return res.status(404).send(`League with id: ${req.body.League} not found.`)
     });
@@ -211,7 +211,7 @@ router.post('/:id/leagues', [
     }, req.body);
 
     const userLeague = new UserLeagueModel(userLeagueToPersist);
-    userLeague.save().then((err, userLeague) => {
+    userLeague.save().then(function(err, userLeague) {
         if(err) res.status(500).send(err);
         res.json(userLeague);
     });
@@ -227,7 +227,7 @@ router.put('/:id/leagues/:userLeagueId',[
         sanitize('UserLeagueName').trim().escape(),
         sanitize('UserLeagueRules').trim().escape(),
         sanitize('UserLeagueIsGlobal').trim().escape()
-    ], (req, res) => {
+    ], function(req, res) {
 
     // Parameter Validation
     const errors = validationResult(req);
@@ -236,19 +236,19 @@ router.put('/:id/leagues/:userLeagueId',[
     }
 
     // Validate User
-    UserModel.findById(req.params.id, (err, user) => {
+    UserModel.findById(req.params.id, function(err, user)  {
         if(err) return res.status(500).send(err);
         if(!user) return res.status(404).send(`User with id: ${req.params.id} not found.`)
     });
 
     // Validate League
-    LeagueModel.findById(req.body.League, (err, league) => {
+    LeagueModel.findById(req.body.League, function(err, league) {
         if(err) return res.status(500).send(err);
         if(!league) return res.status(404).send(`UserLeague with id: ${req.body.League} not found.`)
     });
 
     // Validate User League and Update
-    UserLeagueModel.findById(req.params.userLeagueId, (err, userLeague) => {
+    UserLeagueModel.findById(req.params.userLeagueId, function(err, userLeague) {
         if(err) res.status(500).send(err);
             if(userLeague){
 
@@ -258,7 +258,7 @@ router.put('/:id/leagues/:userLeagueId',[
                 userLeague.UserLeagueRules = req.body.UserLeagueRules;
                 userLeague.UserLeagueIsGlobal = req.body.UserLeagueIsGlobal;
 
-                userLeague.save().then((err, userLeague) => {
+                userLeague.save().then(function(err, userLeague) {
                     if(err) res.status(500).send(err);
                     res.json(userLeague);
             });
@@ -272,7 +272,7 @@ router.put('/:id/leagues/:userLeagueId',[
 router.delete('/:id/leagues/:userLeagueId',[
         sanitize('id').trim().escape(),
         sanitize('userLeagueId').trim().escape()
-    ], (req, res) => {
+    ], function(req, res) {
 
     // TODO: Validate if any ref exists:
     // - UserLeaguePlayer ?

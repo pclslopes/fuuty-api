@@ -20,15 +20,15 @@ const sanitize = require('express-validator/filter').sanitize;
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    CountryModel.find({}, (err, countries) => {
+router.get('/', function(req, res){
+    CountryModel.find({}, function(err, countries) {
         if(err) res.status(500).send(err);
         res.json(countries);
     });
 });
 
-router.get('/:id', (req, res) => {
-    CountryModel.findById(req.params.id, (err, country) => {
+router.get('/:id', function(req, res){
+    CountryModel.findById(req.params.id, function(err, country) {
         if(err) res.status(500).send(err);
         if(country){
             res.json(country);
@@ -43,7 +43,7 @@ router.post('/',[
     check('CountrySymbol').isLength({ min: 1 }).withMessage('CountrySymbol is required'),
     sanitize('CountryName').trim().escape(),
     sanitize('CountrySymbol').trim().escape()
-], (req, res) => {
+], function(req, res) {
 
     // Parameter Validation
     const errors = validationResult(req);
@@ -56,7 +56,7 @@ router.post('/',[
         _id : id
     }, req.body);
     const country = new CountryModel(countryToPersist);
-    country.save().then((err, country) => {
+    country.save().then(function(err, country) {
         if(err) res.status(500).send(err);
         res.json(country);
     });
@@ -68,19 +68,19 @@ router.put('/:id',[
         check('CountrySymbol').isLength({ min: 1 }).withMessage('CountrySymbol is mandatory'),
         sanitize('CountryName').trim().escape(),
         sanitize('CountrySymbol').trim().escape()
-    ], (req, res) => {
+    ], function(req, res) {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({ errors: errors.mapped() });
     }
     
-    CountryModel.findById(req.params.id, (err, country) => {
+    CountryModel.findById(req.params.id, function(err, country) {
         if(err) res.status(500).send(err);
         if(country){
             country.CountryName = req.body.CountryName;
             country.CountrySymbol = req.body.CountrySymbol;
-            country.save().then((err, country) => {
+            country.save().then(function(err, country) {
                 if(err) res.status(500).send(err);
                 res.json(country);
             });
@@ -90,8 +90,8 @@ router.put('/:id',[
     });
 });
 
-router.delete('/:id', (req, res) => {
-    CountryModel.findByIdAndRemove(req.params.id, (err, country)=> {
+router.delete('/:id', function(req, res){
+    CountryModel.findByIdAndRemove(req.params.id, function(err, country) {
         if(err) res.status(500).send(err);
         res.status(200).send(`Country with id: ${req.params.id} was deleted.`);
     });

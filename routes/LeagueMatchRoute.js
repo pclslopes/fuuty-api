@@ -27,16 +27,16 @@ const router = express.Router();
 // api/v1/leagues/{id}/leaguematch [GET]
 router.get('/:id/leaguematches',[
         sanitize('id').trim().escape()
-    ], (req, res) => {
+    ], function(req, res) {
 
     // Validate League
-    LeagueModel.findById(req.params.id, (err, league) => {
+    LeagueModel.findById(req.params.id, function(err, league){
         if(err) return res.status(500).send(err);
         if(!league) return res.status(404).send(`League with id: ${req.params.id} not found.`)
     });
 
     // Get data
-    LeagueMatchModel.find({ League: req.params.id }, (err, leagueMatches) => {
+    LeagueMatchModel.find({ League: req.params.id }, function(err, leagueMatches) {
         if(err) res.status(500).send(err);
         res.json(leagueMatches);
     });
@@ -46,15 +46,15 @@ router.get('/:id/leaguematches',[
 router.get('/:id/leaguematches/:leagueMatchId',[
         sanitize('id').trim().escape(),
         sanitize('leagueMatchId').trim().escape()
-    ], (req, res) => {
+    ], function(req, res) {
 
     // Validate League
-    LeagueModel.findById(req.params.id, (err, league) => {
+    LeagueModel.findById(req.params.id, function(err, league) {
         if(err) return res.status(500).send(err);
         if(!league) return res.status(404).send(`League with id: ${req.params.id} not found.`)
     });
 
-    LeagueMatchModel.findById(req.params.leagueMatchId, (err, leagueMatch) => {
+    LeagueMatchModel.findById(req.params.leagueMatchId, function(err, leagueMatch) {
         if(err) res.status(500).send(err);
         if(leagueMatch){
             res.json(leagueMatch);
@@ -78,7 +78,7 @@ router.post('/:id/leaguematches', [
         sanitize('LeagueMatchIsHalfTime').trim().escape(),
         sanitize('LeagueMatchIsFullTime').trim().escape(),
         sanitize('LeagueMatchCurrentTime').trim().escape(),
-    ], (req, res) => {
+    ], function(req, res) {
 
     // Parameter Validation
     const errors = validationResult(req);
@@ -87,19 +87,19 @@ router.post('/:id/leaguematches', [
     }
 
     // Validate League
-    LeagueModel.findById(req.params.id, (err, league) => {
+    LeagueModel.findById(req.params.id, function(err, league) {
         if(err) return res.status(500).send(err);
         if(!league) return res.status(404).send(`League with id: ${req.params.id} not found.`)
     });
 
     // Validate LeagueTeamHome
-    TeamModel.findById(req.body.LeagueTeamHome, (err, team) => {
+    TeamModel.findById(req.body.LeagueTeamHome, function(err, team) {
         if(err) return res.status(500).send(err);
         if(!team) return res.status(404).send(`Team[LeagueTeamHome] with id: ${req.body.LeagueTeamHome} not found.`)
     });
 
     // Validate LeagueTeamAway
-    TeamModel.findById(req.body.LeagueTeamAway, (err, team) => {
+    TeamModel.findById(req.body.LeagueTeamAway, function(err, team) {
         if(err) return res.status(500).send(err);
         if(!team) return res.status(404).send(`Team[LeagueTeamAway] with id: ${req.body.LeagueTeamAway} not found.`)
     });
@@ -111,7 +111,7 @@ router.post('/:id/leaguematches', [
     }, req.body);
 
     const leagueMatch = new LeagueMatchModel(leagueMatchToPersist);
-    leagueMatch.save().then((err, leagueMatch) => {
+    leagueMatch.save().then(function(err, leagueMatch) {
         if(err) res.status(500).send(err);
         res.json(leagueMatch);
     });
@@ -132,7 +132,7 @@ router.post('/:id/leaguematches/:leagueMatchId', [
         sanitize('LeagueMatchIsHalfTime').trim().escape(),
         sanitize('LeagueMatchIsFullTime').trim().escape(),
         sanitize('LeagueMatchCurrentTime').trim().escape(),
-    ], (req, res) => {
+    ], function(req, res) {
 
     // Parameter Validation
     const errors = validationResult(req);
@@ -141,25 +141,25 @@ router.post('/:id/leaguematches/:leagueMatchId', [
     }
 
     // Validate League
-    LeagueModel.findById(req.params.id, (err, league) => {
+    LeagueModel.findById(req.params.id, function(err, league) {
         if(err) return res.status(500).send(err);
         if(!league) return res.status(404).send(`League with id: ${req.params.id} not found.`)
     });
 
     // Validate LeagueTeamHome
-    TeamModel.findById(req.body.LeagueTeamHome, (err, team) => {
+    TeamModel.findById(req.body.LeagueTeamHome, function(err, team) {
         if(err) return res.status(500).send(err);
         if(!team) return res.status(404).send(`Team[LeagueTeamHome] with id: ${req.body.LeagueTeamHome} not found.`)
     });
 
     // Validate LeagueTeamAway
-    TeamModel.findById(req.body.LeagueTeamAway, (err, team) => {
+    TeamModel.findById(req.body.LeagueTeamAway, function(err, team) {
         if(err) return res.status(500).send(err);
         if(!team) return res.status(404).send(`Team[LeagueTeamAway] with id: ${req.body.LeagueTeamAway} not found.`)
     });
 
     // Validate League Match and Update
-    LeagueMatchModel.findById(req.params.leagueMatchId, (err, leagueMatch) => {
+    LeagueMatchModel.findById(req.params.leagueMatchId, function(err, leagueMatch) {
         if(err) res.status(500).send(err);
             if(leagueMatch){
 
@@ -176,7 +176,7 @@ router.post('/:id/leaguematches/:leagueMatchId', [
                 leagueMatch.LeagueMatchIsFullTime = req.body.LeagueMatchIsFullTime;
                 leagueMatch.LeagueMatchCurrentTime = req.body.LeagueMatchCurrentTime;
 
-                leagueMatch.save().then((err, leagueMatch) => {
+                leagueMatch.save().then(function(err, leagueMatch) {
                     if(err) res.status(500).send(err);
                     res.json(leagueMatch);
             });
@@ -190,12 +190,12 @@ router.post('/:id/leaguematches/:leagueMatchId', [
 router.delete('/:id/leaguematches/:leagueMatchId',[
         sanitize('id').trim().escape(),
         sanitize('leagueMatchId').trim().escape()
-    ], (req, res) => {
+    ], function(req, res) {
 
     // TODO: Validate if any ref exists:
     // - UserLeaguePlayerBet ?
 
-    LeagueMatchModel.findByIdAndRemove(req.params.id, (err, leagueMatch)=> {
+    LeagueMatchModel.findByIdAndRemove(req.params.id, function(err, leagueMatch) {
         if(err) res.status(500).send(err);
         res.status(200).send(`LeagueMatch with id: ${req.params.leagueMatchId} was deleted.`);
     });

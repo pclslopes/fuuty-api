@@ -26,7 +26,7 @@ var path = require('path');
 //import bodyParser from 'body-parser';
 //import path from 'path';
 
-const buildUrl = (version, path) => `/api/${version}/${path}`;
+const buildUrl = function(version, path) { return `/api/${version}/${path}`};
 const COUNTRY_BASE_URL = buildUrl('v1', 'country');
 const LEAGUE_BASE_URL = buildUrl('v1', 'league');
 const LEAGUE_MATCH_BASE_URL = buildUrl('v1', 'league/:id/leaguematches');
@@ -48,11 +48,11 @@ server.use(USER_BASE_URL, UserRoute);
 mongoose.connect(Config.database.url, { useNewUrlParser: true });
 const db = mongoose.connection;
 
-db.once('open', () => {
+db.once('open', function() {
     console.log(`Connected to the DB in MLabs [${Config.database.db}]`);
 });
 
 // Server Start
-server.listen(Config.server.port, () => {
+server.listen(Config.server.port, function() {
     console.log(`Server started on [${Config.server.host}] port [${Config.server.port}]`);
 });
