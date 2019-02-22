@@ -1,13 +1,22 @@
 // api/v1/countries
 // api/v1/countries/{id}
 // api/v1/countries/{id}/leagues
+var express = require('express');
+var _ = require('lodash');
+var CountryModel = require('../models/Country');
+var mongoose = require('mongoose');
+const check = require('express-validator/check').check;
+const validationResult = require('express-validator/check').validationResult;
+const checkSchema = require('express-validator/check').checkSchema;
+const matchedData = require('express-validator/filter').matchedData;
+const sanitize = require('express-validator/filter').sanitize;
 
-import express from 'express';
-import _ from 'lodash';
-import CountryModel from '../models/Country';
-import mongoose from 'mongoose';
-import { check, validationResult, checkSchema } from 'express-validator/check';
-import { matchedData, sanitize } from 'express-validator/filter';
+//import express from 'express';
+//import _ from 'lodash';
+//import CountryModel from '../models/Country';
+//import mongoose from 'mongoose';
+//import { check, validationResult, checkSchema } from 'express-validator/check';
+//import { matchedData, sanitize } from 'express-validator/filter';
 
 const router = express.Router();
 

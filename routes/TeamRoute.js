@@ -1,13 +1,23 @@
 // api/v1/teams
 // api/v1/teams/{id}
+var express = require('express');
+var mongoose = require('mongoose');
+var _ = require('lodash');
+const check = require('express-validator/check').check;
+const validationResult = require('express-validator/check').validationResult;
+const checkSchema = require('express-validator/check').checkSchema;
+const matchedData = require('express-validator/filter').matchedData;
+const sanitize = require('express-validator/filter').sanitize;
+var TeamModel = require('../models/Team');
+var CountryModel = require('../models/Country');
 
-import express from 'express';
-import _ from 'lodash';
-import TeamModel from '../models/Team';
-import CountryModel from '../models/Country';
-import mongoose from 'mongoose';
-import { check, validationResult, checkSchema } from 'express-validator/check';
-import { matchedData, sanitize } from 'express-validator/filter';
+//import express from 'express';
+//import _ from 'lodash';
+//import TeamModel from '../models/Team';
+//import CountryModel from '../models/Country';
+//import mongoose from 'mongoose';
+//import { check, validationResult, checkSchema } from 'express-validator/check';
+//import { matchedData, sanitize } from 'express-validator/filter';
 
 const router = express.Router();
 

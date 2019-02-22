@@ -1,15 +1,26 @@
 
 // api/v1/leagues/{id}/leaguematch
 // api/v1/leagues/{id}/leaguematch/{id}
+var express = require('express');
+var mongoose = require('mongoose');
+var _ = require('lodash');
+const check = require('express-validator/check').check;
+const validationResult = require('express-validator/check').validationResult;
+const checkSchema = require('express-validator/check').checkSchema;
+const matchedData = require('express-validator/filter').matchedData;
+const sanitize = require('express-validator/filter').sanitize;
+var LeagueMatchModel = require('../models/LeagueMatch');
+var LeagueModel = require('../models/League');
+var TeamModel = require('../models/Team');
 
-import express from 'express';
-import mongoose from 'mongoose';
-import _ from 'lodash';
-import LeagueMatchModel from '../models/LeagueMatch';
-import LeagueModel from '../models/League';
-import TeamModel from '../models/Team';
-import { check, validationResult, checkSchema } from 'express-validator/check';
-import { matchedData, sanitize } from 'express-validator/filter';
+//import express from 'express';
+//import mongoose from 'mongoose';
+//import _ from 'lodash';
+//import LeagueMatchModel from '../models/LeagueMatch';
+//import LeagueModel from '../models/League';
+//import TeamModel from '../models/Team';
+//import { check, validationResult, checkSchema } from 'express-validator/check';
+//import { matchedData, sanitize } from 'express-validator/filter';
 
 const router = express.Router();
 
